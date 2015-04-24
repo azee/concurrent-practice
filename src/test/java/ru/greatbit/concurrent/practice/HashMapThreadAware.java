@@ -63,7 +63,7 @@ public class HashMapThreadAware {
      * an infinitive loop. The previously added value will be in separate thread stack as an object to compare with.
      * 4. While separate thread executing "equals()" - we remove the first value from the map in the main thread.
      * 5. We release the separate thread, "equals()" function finish execution and returns true. In "put()" value
-     * of the first and the second entries are swapped. But as the first value us already removed fom the map
+     * of the first and the second entries are swapped. But as the first value is already removed from the map
      * (table in the map doesn't contain the link to the object any more) map will remain empty.
      * If operations were synced we will have map.size() = 1. But we have 0.
      * @param map
