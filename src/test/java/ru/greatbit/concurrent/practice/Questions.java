@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
 public class Questions {
     private static final int size = 20 * 1000 * 1000;
     //private static ConcurrentHashMap<Integer, String> dataMap = new ConcurrentHashMap<Integer, String>(size);
-    private static ConcurrentHashMap<Integer, String> dataMap = new IntegerConcurrentHashMap<Integer, String>(size);
+    private static ConcurrentHashMap<Integer, String> dataMap = new IntegerConcurrentHashMap<>(size);
 
     @BeforeClass
     public static void populateDataMap() {
@@ -39,14 +39,11 @@ public class Questions {
         Random random = new Random();
 
         long start = System.nanoTime();
-
         for (int i = 0; i < 15; i++) {
             int index = random.nextInt(size);
             randomlySelectedEntries.add(dataMap.get(index));
         }
-
         long end = System.nanoTime();
-
         assertThat(end - start, lessThan(35l * 1000L));
     }
 
