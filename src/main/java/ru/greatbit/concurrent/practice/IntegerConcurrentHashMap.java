@@ -9,12 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class IntegerConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
     protected List<V> values;
 
-    // We won't use RWLock because its instantiation cost a lot
-    //in this particular example because we instantiate all values
-    //in the test setup and we don't need to lock while reading
-    //ReadWriteLock lock = new ReentrantReadWriteLock();
-
-
     public IntegerConcurrentHashMap(int initialCapacity) {
         super(initialCapacity);
         values = new ArrayList<>(initialCapacity);
