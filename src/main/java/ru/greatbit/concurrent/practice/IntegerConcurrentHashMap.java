@@ -6,35 +6,18 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by azee on 25.04.15.
  */
-public class IntegerConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
-    protected List<V> values;
+public class IntegerConcurrentHashMap<K, V> extends BaseIntegerConcurrentHashMap<K, V> {
 
     public IntegerConcurrentHashMap(int initialCapacity) {
         super(initialCapacity);
-        values = new ArrayList<>(initialCapacity);
     }
 
     @Override
     public V put(K key, V value) {
-        verifyKey(key);
         synchronized (this){
             values.add((Integer)key, value);
         }
         return super.put(key, value);
-    }
-
-    //No need to sync - we are not updating values in the test
-    //If we were - we'd better use a ReadWriteLock
-    @Override
-    public V get(Object key) {
-        return values.get((Integer) verifyKey(key));
-    }
-
-    protected Object verifyKey(Object key){
-        if (!(key instanceof Integer)){
-            throw new UnsupportedOperationException("Integer Hash Map supports only Integer keys");
-        }
-        return key;
     }
 
     @Override
@@ -42,7 +25,7 @@ public class IntegerConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
         V previous = super.putIfAbsent(key, value);
         if (previous == null){
             synchronized (this){
-                values.add((Integer) verifyKey(key), value);
+                values.add(value);
             }
         }
         return previous;
@@ -53,7 +36,7 @@ public class IntegerConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
         super.putAll(m);
         synchronized (this){
             for (K key : m.keySet()){
-                values.add((Integer) verifyKey(key), m.get(key));
+                values.add(m.get(key));
             }
         }
     }
@@ -79,7 +62,7 @@ public class IntegerConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
         boolean replaced = super.replace(key, oldValue, newValue);
         if (replaced) {
             synchronized (this) {
-                values.add((Integer) verifyKey(key), newValue);
+                values.add(newValue);
             }
         }
         return replaced;
@@ -88,8 +71,9 @@ public class IntegerConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
     @Override
     public V replace(K key, V value) {
         synchronized (this) {
-            values.add((Integer) verifyKey(key), value);
+            values.add(value);
         }
         return super.replace(key, value);
     }
+
 }

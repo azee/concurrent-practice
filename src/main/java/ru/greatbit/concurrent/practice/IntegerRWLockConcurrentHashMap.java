@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Created by azee on 25.04.15.
  */
-public class IntegerRWLockConcurrentHashMap<K, V> extends IntegerConcurrentHashMap<K, V> {
+public class IntegerRWLockConcurrentHashMap<K, V> extends BaseIntegerConcurrentHashMap<K, V> {
 
     ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -22,24 +22,10 @@ public class IntegerRWLockConcurrentHashMap<K, V> extends IntegerConcurrentHashM
 
     @Override
     public V put(K key, V value) {
-        verifyKey(key);
         lock.writeLock().lock();
         values.add((Integer)key, value);
         lock.writeLock().unlock();
         return super.put(key, value);
-    }
-
-    //No need to sync - we are not updating values in the test
-    //If we were - we'd better use a ReadWriteLock
-    @Override
-    public V get(Object key) {
-        lock.readLock().lock();
-        try {
-            return values.get((Integer) verifyKey(key));
-        } finally {
-            lock.readLock().unlock();
-        }
-
     }
 
     @Override
@@ -47,7 +33,7 @@ public class IntegerRWLockConcurrentHashMap<K, V> extends IntegerConcurrentHashM
         V previous = super.putIfAbsent(key, value);
         if (previous == null){
             lock.writeLock().lock();
-            values.add((Integer) verifyKey(key), value);
+            values.add(value);
             lock.writeLock().unlock();
         }
         return previous;
@@ -58,7 +44,7 @@ public class IntegerRWLockConcurrentHashMap<K, V> extends IntegerConcurrentHashM
         super.putAll(m);
         lock.writeLock().lock();
         for (K key : m.keySet()){
-            values.add((Integer) verifyKey(key), m.get(key));
+            values.add(m.get(key));
         }
         lock.writeLock().unlock();
     }
@@ -84,7 +70,7 @@ public class IntegerRWLockConcurrentHashMap<K, V> extends IntegerConcurrentHashM
         boolean replaced = super.replace(key, oldValue, newValue);
         if (replaced) {
             lock.writeLock().lock();
-            values.add((Integer) verifyKey(key), newValue);
+            values.add(newValue);
             lock.writeLock().unlock();
         }
         return replaced;
@@ -93,7 +79,7 @@ public class IntegerRWLockConcurrentHashMap<K, V> extends IntegerConcurrentHashM
     @Override
     public V replace(K key, V value) {
         lock.writeLock().lock();
-        values.add((Integer) verifyKey(key), value);
+        values.add((Integer) key, value);
         lock.writeLock().unlock();
         return super.replace(key, value);
     }

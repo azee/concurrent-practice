@@ -4,9 +4,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -18,8 +18,7 @@ import static org.junit.Assert.assertThat;
  */
 public class Questions {
     private static final int size = 20 * 1000 * 1000;
-    //private static ConcurrentHashMap<Integer, String> dataMap = new ConcurrentHashMap<Integer, String>(size);
-    private static ConcurrentHashMap<Integer, String> dataMap = new IntegerConcurrentHashMap<>(size);
+    private static IntegerConcurrentHashMap<Integer, String> dataMap = new IntegerConcurrentHashMap<>(size);
 
     @BeforeClass
     public static void populateDataMap() {
@@ -34,29 +33,20 @@ public class Questions {
      */
     @Test
     public void testFastConcurrentHashMap() {
-        ArrayList<String> randomlySelectedEntries = new ArrayList<String>(15);
-
+        List<String> randomlySelectedEntries = new ArrayList<String>(15);
+        List<Integer> indexes = new ArrayList<>(15);
         Random random = new Random();
+        for (int i = 0; i < 15; i++) {
+            indexes.add(random.nextInt(size));
+        }
 
         long start = System.nanoTime();
-        for (int i = 0; i < 15; i++) {
-            int index = random.nextInt(size);
-            randomlySelectedEntries.add(dataMap.get(index));
-        }
+        randomlySelectedEntries = dataMap.values(indexes);
         long end = System.nanoTime();
-        assertThat(end - start, lessThan(35l * 1000L));
-    }
+        assertThat(end - start, lessThan(65l * 1000L));
 
-//    @Test
-//    public void testFastConcurrentHashMap() {
-//        ArrayList<Map.Entry<Integer, String>> randomlySelectedEntries = new ArrayList<Map.Entry<Integer, String>>(15);
-//
-//        Random random = new Random();
-//        for (int i = 0; i < 15; i++) {
-//            int index = random.nextInt(size);
-//            //modify ConcurrentHashMap to provide some past way of looking up by index;
-//            // randomlySelectedEntries = someCodeYouWrote.get(index);
-//            //randomlySelectedEntries.add(dataMap.get(index));
-//        }
-//    }
+        //Use randomlySelectedEntries so that compiler won't eliminate previous block
+        //as optimisation
+        assertThat(randomlySelectedEntries.size(), is(15));
+    }
 }
