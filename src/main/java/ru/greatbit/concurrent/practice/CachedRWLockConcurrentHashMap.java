@@ -1,21 +1,18 @@
 package ru.greatbit.concurrent.practice;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by azee on 25.04.15.
  */
-public class IntegerRWLockConcurrentHashMap<K, V> extends BaseIntegerConcurrentHashMap<K, V> {
+public class CachedRWLockConcurrentHashMap<K, V> extends BaseCachedConcurrentHashMap<K, V> {
 
     ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public IntegerRWLockConcurrentHashMap(int initialCapacity) {
+    public CachedRWLockConcurrentHashMap(int initialCapacity) {
         super(initialCapacity);
         values = new ArrayList<>(initialCapacity);
     }

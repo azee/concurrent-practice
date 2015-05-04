@@ -1,14 +1,13 @@
 package ru.greatbit.concurrent.practice;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by azee on 25.04.15.
  */
-public class IntegerConcurrentHashMap<K, V> extends BaseIntegerConcurrentHashMap<K, V> {
+public class CachedConcurrentHashMap<K, V> extends BaseCachedConcurrentHashMap<K, V> {
 
-    public IntegerConcurrentHashMap(int initialCapacity) {
+    public CachedConcurrentHashMap(int initialCapacity) {
         super(initialCapacity);
     }
 
