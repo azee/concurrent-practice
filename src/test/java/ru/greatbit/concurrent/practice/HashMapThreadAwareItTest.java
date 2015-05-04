@@ -27,10 +27,10 @@ public class HashMapThreadAwareItTest {
     public void hashMapIsNotThreadSafeTest(final Map<Integer, Object> map, boolean expectCorruption)
             throws InterruptedException {
         corrupted = false;
-        final int N_THREADS = 1000;
+        final int THREADS = 1000;
 
-        ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
-        for (int i = 0; i < N_THREADS; i++){
+        ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+        for (int i = 0; i < THREADS; i++){
             final int threadId = i;
             Runnable worker = new Runnable() {
                 @Override
