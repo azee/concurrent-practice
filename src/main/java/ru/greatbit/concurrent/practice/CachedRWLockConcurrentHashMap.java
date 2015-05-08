@@ -20,7 +20,7 @@ public class CachedRWLockConcurrentHashMap<K, V> extends BaseCachedConcurrentHas
     @Override
     public V put(K key, V value) {
         lock.writeLock().lock();
-        values.add((Integer)key, value);
+        values.add((Integer)key, new SimpleEntry<K, V>(key, value));
         lock.writeLock().unlock();
         return super.put(key, value);
     }
@@ -30,7 +30,7 @@ public class CachedRWLockConcurrentHashMap<K, V> extends BaseCachedConcurrentHas
         V previous = super.putIfAbsent(key, value);
         if (previous == null){
             lock.writeLock().lock();
-            values.add(value);
+            values.add(new SimpleEntry<K, V>(key, value));
             lock.writeLock().unlock();
         }
         return previous;
@@ -41,7 +41,7 @@ public class CachedRWLockConcurrentHashMap<K, V> extends BaseCachedConcurrentHas
         super.putAll(m);
         lock.writeLock().lock();
         for (K key : m.keySet()){
-            values.add(m.get(key));
+            values.add(new SimpleEntry<K, V>(key, m.get(key)));
         }
         lock.writeLock().unlock();
     }
@@ -67,7 +67,7 @@ public class CachedRWLockConcurrentHashMap<K, V> extends BaseCachedConcurrentHas
         boolean replaced = super.replace(key, oldValue, newValue);
         if (replaced) {
             lock.writeLock().lock();
-            values.add(newValue);
+            values.add(new SimpleEntry<K, V>(key, newValue));
             lock.writeLock().unlock();
         }
         return replaced;
@@ -76,7 +76,7 @@ public class CachedRWLockConcurrentHashMap<K, V> extends BaseCachedConcurrentHas
     @Override
     public V replace(K key, V value) {
         lock.writeLock().lock();
-        values.add((Integer) key, value);
+        values.add((Integer) key, new SimpleEntry<K, V>(key, value));
         lock.writeLock().unlock();
         return super.replace(key, value);
     }

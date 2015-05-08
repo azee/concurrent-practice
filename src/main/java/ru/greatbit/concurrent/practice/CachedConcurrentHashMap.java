@@ -14,7 +14,7 @@ public class CachedConcurrentHashMap<K, V> extends BaseCachedConcurrentHashMap<K
     @Override
     public V put(K key, V value) {
         synchronized (this){
-            values.add((Integer)key, value);
+            values.add((Integer)key, new SimpleEntry<K, V>(key, value));
         }
         return super.put(key, value);
     }
@@ -24,7 +24,7 @@ public class CachedConcurrentHashMap<K, V> extends BaseCachedConcurrentHashMap<K
         V previous = super.putIfAbsent(key, value);
         if (previous == null){
             synchronized (this){
-                values.add(value);
+                values.add(new SimpleEntry<K, V>(key, value));
             }
         }
         return previous;
@@ -35,7 +35,7 @@ public class CachedConcurrentHashMap<K, V> extends BaseCachedConcurrentHashMap<K
         super.putAll(m);
         synchronized (this){
             for (K key : m.keySet()){
-                values.add(m.get(key));
+                values.add(new SimpleEntry<K, V>(key, m.get(key)));
             }
         }
     }
@@ -61,7 +61,7 @@ public class CachedConcurrentHashMap<K, V> extends BaseCachedConcurrentHashMap<K
         boolean replaced = super.replace(key, oldValue, newValue);
         if (replaced) {
             synchronized (this) {
-                values.add(newValue);
+                values.add(new SimpleEntry<K, V>(key, newValue));
             }
         }
         return replaced;
@@ -70,7 +70,7 @@ public class CachedConcurrentHashMap<K, V> extends BaseCachedConcurrentHashMap<K
     @Override
     public V replace(K key, V value) {
         synchronized (this) {
-            values.add(value);
+            values.add(new SimpleEntry<K, V>(key, value));
         }
         return super.replace(key, value);
     }
